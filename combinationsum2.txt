@@ -1,0 +1,30 @@
+class Solution:
+    def combinationSum2(self, candidates, target):
+        candidates.sort()   # Step 1: sort
+        result = []
+
+        def backtrack(start, current, remaining):
+            if remaining == 0:
+                result.append(current[:])
+                return
+            
+            if remaining < 0:
+                return
+
+            for i in range(start, len(candidates)):
+                
+                # Skip duplicates
+                if i > start and candidates[i] == candidates[i - 1]:
+                    continue
+                
+                # Choose number
+                current.append(candidates[i])
+                
+                # Move to next index (no reuse)
+                backtrack(i + 1, current, remaining - candidates[i])
+                
+                # Backtrack
+                current.pop()
+
+        backtrack(0, [], target)
+        return result
