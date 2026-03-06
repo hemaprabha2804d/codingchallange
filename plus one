@@ -1,0 +1,28 @@
+/**
+ * Note: The returned array must be malloced, assume caller calls free().
+ */
+int* plusOne(int* digits, int digitsSize, int* returnSize) {
+    // Iterate from the last digit (least significant)
+    for (int i = digitsSize - 1; i >= 0; i--) {
+        if (digits[i] < 9) {
+            // If digit is less than 9, just increment and return
+            digits[i]++;
+            *returnSize = digitsSize;
+            int* result = (int*)malloc(digitsSize * sizeof(int));
+            for (int j = 0; j < digitsSize; j++) result[j] = digits[j];
+            return result;
+        }
+        // If digit is 9, it becomes 0 and we continue to the next digit
+        digits[i] = 0;
+    }
+
+    // If we are here, it means all digits were 9 (e.g., [9,9,9])
+    // We need a new array of size n + 1 (e.g., [1,0,0,0])
+    *returnSize = digitsSize + 1;
+    int* result = (int*)malloc((digitsSize + 1) * sizeof(int));
+    result[0] = 1; // The leading carry
+    for (int i = 1; i < *returnSize; i++) {
+        result[i] = 0;
+    }
+    return result;
+}
