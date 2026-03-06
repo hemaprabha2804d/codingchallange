@@ -1,0 +1,25 @@
+int mySqrt(int x) {
+    if (x < 2) return x;
+
+    int left = 1, right = x / 2;
+    int ans;
+
+    while (left <= right) {
+        // Use mid = left + (right - left) / 2 to prevent integer overflow
+        int mid = left + (right - left) / 2;
+        
+        // Use long long for the square to prevent overflow
+        long long square = (long long)mid * mid;
+
+        if (square == x) {
+            return mid;
+        } else if (square < x) {
+            ans = mid;    // mid could be the floor value
+            left = mid + 1;
+        } else {
+            right = mid - 1;
+        }
+    }
+
+    return ans;
+}
