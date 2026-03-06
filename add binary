@@ -1,0 +1,36 @@
+#include <string.h>
+#include <stdlib.h>
+
+char* addBinary(char* a, char* b) {
+    int len_a = strlen(a);
+    int len_b = strlen(b);
+    // The result can be at most 1 char longer than the longest input
+    int max_len = (len_a > len_b ? len_a : len_b);
+    char* result = (char*)malloc((max_len + 2) * sizeof(char));
+    
+    int i = len_a - 1;
+    int j = len_b - 1;
+    int k = 0;
+    int carry = 0;
+
+    // Add bits from right to left
+    while (i >= 0 || j >= 0 || carry) {
+        int sum = carry;
+        if (i >= 0) sum += a[i--] - '0';
+        if (j >= 0) sum += b[j--] - '0';
+        
+        result[k++] = (sum % 2) + '0'; // Current bit
+        carry = sum / 2;               // Carry for next bit
+    }
+    
+    result[k] = '\0';
+
+    // Reverse the string because we added bits from right to left
+    for (int start = 0, end = k - 1; start < end; start++, end--) {
+        char temp = result[start];
+        result[start] = result[end];
+        result[end] = temp;
+    }
+
+    return result;
+}
