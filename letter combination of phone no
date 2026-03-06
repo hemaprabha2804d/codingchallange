@@ -1,0 +1,49 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Mapping digits 2-9 to letters
+const char* map[] = {
+    "", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"
+};
+
+void backtrack(char* digits, int index, char* current, char** result, int* count) {
+    if (digits[index] == '\0') {
+        // We found a complete combination
+        result[*count] = (char*)malloc((index + 1) * sizeof(char));
+        strcpy(result[*count], current);
+        (*count)++;
+        return;
+    }
+
+    const char* letters = map[digits[index] - '0'];
+    for (int i = 0; i < strlen(letters); i++) {
+        current[index] = letters[i];
+        current[index + 1] = '\0';
+        backtrack(digits, index + 1, current, result, count);
+    }
+}
+
+char** letterCombinations(char* digits, int* returnSize) {
+    int len = strlen(digits);
+    if (len == 0) {
+        *returnSize = 0;
+        return NULL;
+    }
+
+    // Calculate total combinations: 3^n or 4^n
+    int total = 1;
+    for (int i = 0; i < len; i++) {
+        int d = digits[i] - '0';
+        total *= (d == 7 || d == 9) ? 4 : 3;
+    }
+
+    char** result = (char**)malloc(total * sizeof(char*));
+    char* current = (char*)malloc((len + 1) * sizeof(char));
+    *returnSize = 0;
+
+    backtrack(digits, 0, current, result, returnSize);
+
+    free(current);
+    return result;
+}
