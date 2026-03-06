@@ -1,0 +1,31 @@
+struct ListNode* rotateRight(struct ListNode* head, int k) {
+    // 1. Handle base cases
+    if (!head || !head->next || k == 0) return head;
+
+    // 2. Compute length and find the tail
+    struct ListNode* tail = head;
+    int len = 1;
+    while (tail->next) {
+        tail = tail->next;
+        len++;
+    }
+
+    // 3. Connect tail to head to make it circular
+    tail->next = head;
+
+    // 4. Find the new break point
+    // If k > len, k % len gives the effective rotations
+    k = k % len;
+    int stepsToNewTail = len - k;
+    
+    struct ListNode* newTail = tail; 
+    while (stepsToNewTail--) {
+        newTail = newTail->next;
+    }
+
+    // 5. Set new head and break the circular link
+    struct ListNode* newHead = newTail->next;
+    newTail->next = NULL;
+
+    return newHead;
+}
