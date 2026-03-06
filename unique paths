@@ -1,0 +1,19 @@
+int uniquePaths(int m, int n) {
+    // Optimization: Use a 1D array of size n (or m)
+    int dp[n];
+    
+    // Initialize the first row with 1s
+    for (int j = 0; j < n; j++) {
+        dp[j] = 1;
+    }
+    
+    // Fill the rest of the grid row by row
+    for (int i = 1; i < m; i++) {
+        for (int j = 1; j < n; j++) {
+            // New value = Value from cell above (dp[j]) + Value from left cell (dp[j-1])
+            dp[j] += dp[j - 1];
+        }
+    }
+    
+    return dp[n - 1];
+}
