@@ -1,0 +1,37 @@
+#include <stdlib.h>
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     struct ListNode *next;
+ * };
+ */
+
+struct ListNode* deleteDuplicates(struct ListNode* head) {
+    // 1. Create a dummy node to handle head deletion easily
+    struct ListNode* dummy = (struct ListNode*)malloc(sizeof(struct ListNode));
+    dummy->next = head;
+    struct ListNode* prev = dummy;
+
+    while (head != NULL) {
+        // 2. If it's a start of a duplicates range
+        if (head->next != NULL && head->val == head->next->val) {
+            // Move head to the end of the duplicates range
+            while (head->next != NULL && head->val == head->next->val) {
+                head = head->next;
+            }
+            // Skip all duplicates by linking prev to the node after the range
+            prev->next = head->next;
+        } else {
+            // 3. No duplicate, move prev pointer forward
+            prev = prev->next;
+        }
+        // Move head pointer forward
+        head = head->next;
+    }
+
+    struct ListNode* result = dummy->next;
+    free(dummy); // Clean up the dummy node
+    return result;
+}
