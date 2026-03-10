@@ -1,0 +1,43 @@
+#include <stdbool.h>
+#include <string.h>
+
+bool dfs(char** board, int r, int c, int rows, int cols, char* word, int index) {
+    // Base case: All characters in the word have been matched
+    if (word[index] == '\0') return true;
+
+    // Boundary and character mismatch checks
+    if (r < 0 || r >= rows || c < 0 || c >= cols || board[r][c] != word[index]) {
+        return false;
+    }
+
+    // Mark as visited by temporarily modifying the board
+    char temp = board[r][c];
+    board[r][c] = '#';
+
+    // Explore 4 directions: Right, Left, Down, Up
+    bool found = dfs(board, r + 1, c, rows, cols, word, index + 1) ||
+                 dfs(board, r - 1, c, rows, cols, word, index + 1) ||
+                 dfs(board, r, c + 1, rows, cols, word, index + 1) ||
+                 dfs(board, r, c - 1, rows, cols, word, index + 1);
+
+    // Restore the character (backtrack)
+    board[r][c] = temp;
+
+    return found;
+}
+
+bool exist(char** board, int boardSize, int* boardColSize, char* word) {
+    int rows = boardSize;
+    int cols = boardColSize[0];
+
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            // Start DFS if the first character matches
+            if (board[i][j] == word[0]) {
+                if (dfs(board, i, j, rows, cols, word, 0)) return true;
+            }
+        }
+    }
+
+    return false;
+}
