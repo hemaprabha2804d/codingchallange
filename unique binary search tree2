@@ -1,0 +1,61 @@
+#include <stdlib.h>
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     struct TreeNode *left;
+ *     struct TreeNode *right;
+ * };
+ */
+
+struct TreeNode* createNode(int val) {
+    struct TreeNode* node = (struct TreeNode*)malloc(sizeof(struct TreeNode));
+    node->val = val;
+    node->left = NULL;
+    node->right = NULL;
+    return node;
+}
+
+struct TreeNode** buildTrees(int start, int end, int* returnSize) {
+    if (start > end) {
+        struct TreeNode** result = (struct TreeNode**)malloc(sizeof(struct TreeNode*));
+        result[0] = NULL;
+        *returnSize = 1;
+        return result;
+    }
+
+    struct TreeNode** all_trees = NULL;
+    int count = 0;
+
+    for (int i = start; i <= end; i++) {
+        int leftSize, rightSize;
+        struct TreeNode** leftSubtrees = buildTrees(start, i - 1, &leftSize);
+        struct TreeNode** rightSubtrees = buildTrees(i + 1, end, &rightSize);
+
+        for (int l = 0; l < leftSize; l++) {
+            for (int r = 0; r < rightSize; r++) {
+                struct TreeNode* root = createNode(i);
+                root->left = leftSubtrees[l];
+                root->right = rightSubtrees[r];
+                
+                all_trees = (struct TreeNode**)realloc(all_trees, (count + 1) * sizeof(struct TreeNode*));
+                all_trees[count++] = root;
+            }
+        }
+        // Memory for the temporary subtree arrays is freed, but nodes are kept
+        free(leftSubtrees);
+        free(rightSubtrees);
+    }
+
+    *returnSize = count;
+    return all_trees;
+}
+
+struct TreeNode** generateTrees(int n, int* returnSize) {
+    if (n == 0) {
+        *returnSize = 0;
+        return NULL;
+    }
+    return buildTrees(1, n, returnSize);
+}
