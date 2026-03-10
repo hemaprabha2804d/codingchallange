@@ -1,0 +1,41 @@
+#include <stdlib.h>
+#include <math.h>
+
+/**
+ * Return an array of arrays of size *returnSize.
+ * The sizes of the arrays are returned as *returnColumnSizes array.
+ */
+void backtrack(int* nums, int numsSize, int start, int* current, int currentSize, 
+               int** result, int* returnSize, int** returnColumnSizes) {
+    
+    // 1. Add the current subset to the result
+    result[*returnSize] = (int*)malloc(currentSize * sizeof(int));
+    for (int i = 0; i < currentSize; i++) {
+        result[*returnSize][i] = current[i];
+    }
+    (*returnColumnSizes)[*returnSize] = currentSize;
+    (*returnSize)++;
+
+    // 2. Explore further elements to build larger subsets
+    for (int i = start; i < numsSize; i++) {
+        current[currentSize] = nums[i]; // Choose
+        backtrack(nums, numsSize, i + 1, current, currentSize + 1, result, returnSize, returnColumnSizes); // Explore
+        // Backtrack (implicit as currentSize doesn't change for the next loop iteration)
+    }
+}
+
+int** subsets(int* nums, int numsSize, int* returnSize, int** returnColumnSizes) {
+    // Total number of subsets is 2^n
+    int totalSubsets = 1 << numsSize; 
+    
+    int** result = (int**)malloc(totalSubsets * sizeof(int*));
+    *returnColumnSizes = (int*)malloc(totalSubsets * sizeof(int));
+    *returnSize = 0;
+
+    int* current = (int*)malloc(numsSize * sizeof(int));
+    
+    backtrack(nums, numsSize, 0, current, 0, result, returnSize, returnColumnSizes);
+
+    free(current);
+    return result;
+}
