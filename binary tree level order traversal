@@ -1,0 +1,44 @@
+#include <stdlib.h>
+
+// Definition already provided by LeetCode
+
+int** levelOrder(struct TreeNode* root, int* returnSize, int** returnColumnSizes) {
+    *returnSize = 0;
+    if (root == NULL) {
+        *returnColumnSizes = NULL;
+        return NULL;
+    }
+
+    // Allocate initial space
+    int capacity = 1000;
+    int **result = (int **)malloc(capacity * sizeof(int *));
+    *returnColumnSizes = (int *)malloc(capacity * sizeof(int));
+
+    struct TreeNode* queue[2000];
+    int front = 0, rear = 0;
+
+    queue[rear++] = root;
+
+    while (front < rear) {
+        int size = rear - front;
+
+        result[*returnSize] = (int *)malloc(size * sizeof(int));
+        (*returnColumnSizes)[*returnSize] = size;
+
+        for (int i = 0; i < size; i++) {
+            struct TreeNode* node = queue[front++];
+
+            result[*returnSize][i] = node->val;
+
+            if (node->left)
+                queue[rear++] = node->left;
+
+            if (node->right)
+                queue[rear++] = node->right;
+        }
+
+        (*returnSize)++;
+    }
+
+    return result;
+}
