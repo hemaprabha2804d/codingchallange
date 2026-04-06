@@ -1,0 +1,37 @@
+#include <stddef.h>
+
+// Global pointers
+struct TreeNode *first = NULL;
+struct TreeNode *second = NULL;
+struct TreeNode *prev = NULL;
+
+// Inorder traversal
+void inorder(struct TreeNode* root) {
+    if (root == NULL) return;
+
+    inorder(root->left);
+
+    // Detect violation
+    if (prev != NULL && prev->val > root->val) {
+        if (first == NULL) {
+            first = prev;   // first wrong node
+        }
+        second = root;      // second wrong node
+    }
+
+    prev = root;
+
+    inorder(root->right);
+}
+
+// Main function
+void recoverTree(struct TreeNode* root) {
+    first = second = prev = NULL;
+
+    inorder(root);
+
+    // Swap values
+    int temp = first->val;
+    first->val = second->val;
+    second->val = temp;
+}
