@@ -1,0 +1,40 @@
+#include <stdlib.h>
+
+// Helper function
+struct TreeNode* build(int* inorder, int inStart, int inEnd,
+                       int* postorder, int* postIndex) {
+
+    if (inStart > inEnd)
+        return NULL;
+
+    // Root from postorder
+    struct TreeNode* root = (struct TreeNode*)malloc(sizeof(struct TreeNode));
+    root->val = postorder[*postIndex];
+    root->left = root->right = NULL;
+
+    (*postIndex)--;
+
+    // Find root in inorder
+    int index = inStart;
+    while (inorder[index] != root->val) {
+        index++;
+    }
+
+    // Build right subtree FIRST
+    root->right = build(inorder, index + 1, inEnd, postorder, postIndex);
+
+    // Build left subtree
+    root->left = build(inorder, inStart, index - 1, postorder, postIndex);
+
+    return root;
+}
+
+// Main function
+struct TreeNode* buildTree(int* inorder, int inorderSize,
+                           int* postorder, int postorderSize) {
+
+    int postIndex = postorderSize - 1;
+
+    return build(inorder, 0, inorderSize - 1,
+                 postorder, &postIndex);
+}
